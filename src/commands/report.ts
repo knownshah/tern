@@ -48,7 +48,7 @@ export async function reportCommand(options: ReportOptions = {}): Promise<number
   const mdLines = [
     `# 🩺 Tern Environment Diagnostic Report`,
     ``,
-    `> Generated automatically by [Tern](https://github.com/tern-tools/tern) on **${dateStr}**`,
+    `> Generated automatically by [Tern](https://github.com/terngg/tern) on **${dateStr}**`,
     ``,
     `## 📊 Project Health: ${score.percentage}% (${score.rating})`,
     ``,

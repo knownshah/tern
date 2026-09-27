@@ -18,7 +18,9 @@ export function getProvider(name?: string): AIProvider {
 
   if (name) {
     const cleanName = name.toLowerCase().trim();
-    const matched = providers.find((p) => p.id === cleanName || p.name.toLowerCase().includes(cleanName));
+    const matched = providers.find(
+      (p) => p.id === cleanName || p.name.toLowerCase().includes(cleanName)
+    );
     if (!matched) {
       const validNames = providers.map((p) => p.id).join(', ');
       throw new Error(`Unknown AI provider "${name}". Supported providers: ${validNames}`);

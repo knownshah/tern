@@ -49,8 +49,7 @@ export async function portCommand(
   // Read-only inspect mode by default
   if (!options.kill) {
     console.log(
-      chalk.cyan('To terminate this process, run: ') +
-        chalk.bold.cyan(`tern port ${port} --kill\n`)
+      chalk.cyan('To terminate this process, run: ') + chalk.bold.cyan(`tern port ${port} --kill\n`)
     );
     return 0;
   }

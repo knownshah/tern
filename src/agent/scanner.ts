@@ -3,11 +3,7 @@ import path from 'node:path';
 import os from 'os';
 import { findExecutable, execCommandWithTimeout } from '../utils/exec.js';
 import { scanMCPServers } from '../mcp/scanner.js';
-import type {
-  CodingAgentInfo,
-  AgentInstructionInfo,
-  AgentDiagnosticReport,
-} from './types.js';
+import type { CodingAgentInfo, AgentInstructionInfo, AgentDiagnosticReport } from './types.js';
 
 export interface AgentScanOptions {
   cwd?: string;
@@ -169,8 +165,7 @@ export async function scanAgentEnvironment(
     const opencodeConfigGlobal = path.join(home, '.config', 'opencode');
     const opencodeConfigLocal = path.join(cwd, '.opencode');
     const hasOpencodeConfig =
-      (await fileOrDirExists(opencodeConfigGlobal)) ||
-      (await fileOrDirExists(opencodeConfigLocal));
+      (await fileOrDirExists(opencodeConfigGlobal)) || (await fileOrDirExists(opencodeConfigLocal));
 
     let opencodeStatus: CodingAgentInfo['status'] = 'missing';
     let opencodeText = 'not installed';

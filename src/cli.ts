@@ -33,7 +33,11 @@ program
   .description('Scan project health, diagnose environment, lockfiles, env vars, and ports')
   .option('--strict', 'Fail with exit code 1 even on warnings', false)
   .option('--json', 'Output results in JSON format for CI/CD', false)
-  .option('--deep', 'Run heavy diagnostics (dependency audits, remote registries, MCP startups)', false)
+  .option(
+    '--deep',
+    'Run heavy diagnostics (dependency audits, remote registries, MCP startups)',
+    false
+  )
   .action(async (cmdOptions) => {
     try {
       const globalOpts = program.opts();
@@ -219,7 +223,9 @@ program
 // 10. Agent command
 program
   .command('agent')
-  .description('Diagnose AI coding readiness (Codex, Claude Code, Gemini CLI, OpenCode, MCP servers)')
+  .description(
+    'Diagnose AI coding readiness (Codex, Claude Code, Gemini CLI, OpenCode, MCP servers)'
+  )
   .option('--json', 'Output machine-readable JSON without decorative output', false)
   .option('--strict', 'Fail with exit code 1 if any warnings or errors are present', false)
   .option('--mcp', 'Run only Model Context Protocol (MCP) server checks', false)
@@ -265,7 +271,9 @@ program
 // 12. Why command
 program
   .command('why <errorMessage>')
-  .description('Explain common developer errors locally (EADDRINUSE, ENOENT, detached HEAD, etc.) or with AI')
+  .description(
+    'Explain common developer errors locally (EADDRINUSE, ENOENT, detached HEAD, etc.) or with AI'
+  )
   .option('--ai', 'Use AI provider if local rules cannot explain the error', false)
   .option('--provider <name>', 'Specify AI provider when using --ai')
   .option('--json', 'Output error analysis in JSON format', false)
@@ -326,7 +334,9 @@ program
 // 15. Watch command
 program
   .command('watch')
-  .description('Watch project configs (.env, package.json, MCP configs) and trigger instant checks on changes')
+  .description(
+    'Watch project configs (.env, package.json, MCP configs) and trigger instant checks on changes'
+  )
   .option('--debounce <ms>', 'Debounce wait interval in milliseconds', '400')
   .action(async (cmdOptions) => {
     try {

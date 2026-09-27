@@ -132,7 +132,9 @@ export async function agentCommand(options: AgentCommandOptions = {}): Promise<n
   } else {
     const parts: string[] = [];
     if (report.warningsCount > 0) {
-      parts.push(chalk.yellow(`${report.warningsCount} warning${report.warningsCount > 1 ? 's' : ''}`));
+      parts.push(
+        chalk.yellow(`${report.warningsCount} warning${report.warningsCount > 1 ? 's' : ''}`)
+      );
     }
     if (report.errorsCount > 0) {
       parts.push(chalk.red(`${report.errorsCount} error${report.errorsCount > 1 ? 's' : ''}`));

@@ -101,7 +101,9 @@ describe('commands/deploy', () => {
       consoleSpy.mockRestore();
 
       expect(exitCode).toBe(0);
-      expect(output).toContain('No hardcoded localhost/127.0.0.1 URLs detected in production source files');
+      expect(output).toContain(
+        'No hardcoded localhost/127.0.0.1 URLs detected in production source files'
+      );
       expect(output).not.toContain('hardcoded localhost URL(s)');
     });
 
@@ -183,7 +185,9 @@ const customLocal = process.env.LOCAL_PROVIDER_URL || 'http://localhost:5000';`
       consoleSpy.mockRestore();
 
       expect(exitCode).toBe(0);
-      expect(output).toContain('No hardcoded localhost/127.0.0.1 URLs detected in production source files');
+      expect(output).toContain(
+        'No hardcoded localhost/127.0.0.1 URLs detected in production source files'
+      );
       expect(output).not.toContain('hardcoded localhost URL(s)');
     });
   });

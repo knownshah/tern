@@ -44,9 +44,7 @@ export function isWatchedFile(filename: string): boolean {
   return WATCHED_FILES.has(base) || WATCHED_FILES.has(filename);
 }
 
-export async function startWatcher(
-  options: WatchOptions = {}
-): Promise<{ stop: () => void }> {
+export async function startWatcher(options: WatchOptions = {}): Promise<{ stop: () => void }> {
   const cwd = options.cwd || process.cwd();
   const debounceMs = options.debounceMs ?? 400;
 
@@ -102,9 +100,7 @@ export async function startWatcher(
       try {
         const scanContext = await createContext(cwd, false, false);
         const results = await runAllChecks(scanContext);
-        const currentIssues = results.filter(
-          (r) => r.status === 'error' || r.status === 'warning'
-        );
+        const currentIssues = results.filter((r) => r.status === 'error' || r.status === 'warning');
 
         const checkTime = getTimestamp();
 

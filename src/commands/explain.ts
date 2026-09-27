@@ -49,7 +49,9 @@ export async function explainCommand(options: ExplainCommandOptions = {}): Promi
         )
       );
     } else {
-      console.log(chalk.green.bold('\n✓ No issues detected in your environment! Everything is healthy.\n'));
+      console.log(
+        chalk.green.bold('\n✓ No issues detected in your environment! Everything is healthy.\n')
+      );
     }
     return 0;
   }

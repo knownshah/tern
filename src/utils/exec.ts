@@ -162,9 +162,7 @@ export async function findExecutable(command: string): Promise<string | null> {
   const dirs = pathEnv.split(delimiter).filter(Boolean);
 
   const extensions = isWin
-    ? (process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM')
-        .split(';')
-        .map((e) => e.toLowerCase())
+    ? (process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM').split(';').map((e) => e.toLowerCase())
     : [''];
 
   for (const dir of dirs) {
@@ -181,4 +179,3 @@ export async function findExecutable(command: string): Promise<string | null> {
 
   return null;
 }
-

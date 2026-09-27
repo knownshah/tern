@@ -5,13 +5,15 @@
 
 // Regex patterns to detect and redact sensitive values
 const DB_URL_REGEX = /\b([a-zA-Z][a-zA-Z0-9+.-]*:\/\/)([^:]+):([^@\s/]+)@/g;
-const GITHUB_TOKEN_REGEX = /\b(gh[pous]_[A-Za-z0-9_]{36,255}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})\b/g;
+const GITHUB_TOKEN_REGEX =
+  /\b(gh[pous]_[A-Za-z0-9_]{36,255}|github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59})\b/g;
 const AWS_KEY_REGEX = /\b(AKIA[0-9A-Z]{16})\b/g;
 const API_KEY_REGEX = /\b(sk-(?:proj-|live-)?[a-zA-Z0-9_-]{20,})\b/g;
 const SLACK_TOKEN_REGEX = /\b(xox[baprs]-[0-9A-Za-z]{10,48})\b/g;
 const STRIPE_KEY_REGEX = /\b(sk_live_[0-9a-zA-Z]{24,32})\b/g;
 const JWT_REGEX = /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}\b/g;
-const PRIVATE_KEY_REGEX = /-----BEGIN (?:[A-Z0-9 ]+)?PRIVATE KEY-----[\s\S]*?-----END (?:[A-Z0-9 ]+)?PRIVATE KEY-----/g;
+const PRIVATE_KEY_REGEX =
+  /-----BEGIN (?:[A-Z0-9 ]+)?PRIVATE KEY-----[\s\S]*?-----END (?:[A-Z0-9 ]+)?PRIVATE KEY-----/g;
 const BEARER_REGEX = /\b(Bearer\s+)[A-Za-z0-9._~+/-]+=*/gi;
 
 // Sensitive environment variable or key patterns

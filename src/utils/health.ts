@@ -88,10 +88,7 @@ export function calculateHealthScore(results: CheckResult[]): HealthScore {
     const penalty = catErrors * errorWeight + catWarnings * warningWeight;
     const maxCapacity = catResults.length * errorWeight;
 
-    let catPercentage = Math.max(
-      0,
-      Math.min(100, Math.round(100 - (penalty / maxCapacity) * 100))
-    );
+    let catPercentage = Math.max(0, Math.min(100, Math.round(100 - (penalty / maxCapacity) * 100)));
 
     if (catErrors === 0 && catWarnings === 0) {
       catPercentage = 100;

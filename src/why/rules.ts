@@ -84,7 +84,9 @@ export const whyRules: WhyRuleFn[] = [
   (err: string) => {
     if (!/ENOENT|no such file or directory/i.test(err)) return null;
 
-    const pathMatch = err.match(/no such file or directory,?\s*(?:open|stat|access)?\s*['"]?([^'"\n]+)['"]?/i);
+    const pathMatch = err.match(
+      /no such file or directory,?\s*(?:open|stat|access)?\s*['"]?([^'"\n]+)['"]?/i
+    );
     const targetPath = pathMatch ? pathMatch[1].trim() : undefined;
 
     return {
@@ -250,24 +252,29 @@ export const whyRules: WhyRuleFn[] = [
 
     switch (code) {
       case 'TS2304':
-        meaning = "Cannot find name: An identifier was used without being declared, or type definitions are missing.";
+        meaning =
+          'Cannot find name: An identifier was used without being declared, or type definitions are missing.';
         fix = "Declare the variable or install missing types (e.g. 'pnpm add -D @types/node').";
         break;
       case 'TS2322':
-        meaning = "Type is not assignable: A value does not match the expected property or variable type.";
-        fix = "Ensure the assigned object/value satisfies the required TypeScript interface.";
+        meaning =
+          'Type is not assignable: A value does not match the expected property or variable type.';
+        fix = 'Ensure the assigned object/value satisfies the required TypeScript interface.';
         break;
       case 'TS2345':
-        meaning = "Argument not assignable: A function call passed arguments that do not match parameter types.";
-        fix = "Update the arguments passed to match the function declaration signature.";
+        meaning =
+          'Argument not assignable: A function call passed arguments that do not match parameter types.';
+        fix = 'Update the arguments passed to match the function declaration signature.';
         break;
       case 'TS7006':
-        meaning = "Implicit 'any': A parameter was not typed and TypeScript 'noImplicitAny' is enabled.";
+        meaning =
+          "Implicit 'any': A parameter was not typed and TypeScript 'noImplicitAny' is enabled.";
         fix = "Add an explicit type annotation to the parameter: '(param: string) => ...'.";
         break;
       case 'TS2307':
-        meaning = "Cannot find module or type declarations: Imported module is not installed or lacks types.";
-        fix = "Install the package and its corresponding @types package if available.";
+        meaning =
+          'Cannot find module or type declarations: Imported module is not installed or lacks types.';
+        fix = 'Install the package and its corresponding @types package if available.';
         break;
     }
 

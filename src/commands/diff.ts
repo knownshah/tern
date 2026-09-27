@@ -26,7 +26,9 @@ export async function diffCommand(
     if (jsonOutput) {
       console.log(
         JSON.stringify(
-          { error: 'Two snapshot JSON files required. Usage: tern diff <local.json> <server.json>' },
+          {
+            error: 'Two snapshot JSON files required. Usage: tern diff <local.json> <server.json>',
+          },
           null,
           2
         )
@@ -51,7 +53,9 @@ export async function diffCommand(
     if (jsonOutput) {
       console.log(JSON.stringify({ error: `Cannot read source file: ${err?.message}` }));
     } else {
-      console.error(chalk.red(`\nError reading source snapshot: ${fullSource} (${err?.message})\n`));
+      console.error(
+        chalk.red(`\nError reading source snapshot: ${fullSource} (${err?.message})\n`)
+      );
     }
     return 1;
   }
@@ -63,7 +67,9 @@ export async function diffCommand(
     if (jsonOutput) {
       console.log(JSON.stringify({ error: `Cannot read target file: ${err?.message}` }));
     } else {
-      console.error(chalk.red(`\nError reading target snapshot: ${fullTarget} (${err?.message})\n`));
+      console.error(
+        chalk.red(`\nError reading target snapshot: ${fullTarget} (${err?.message})\n`)
+      );
     }
     return 1;
   }
@@ -124,7 +130,9 @@ export async function diffCommand(
 
   if (report.summary.warnings > 0) {
     console.log(
-      chalk.yellow(`⚠ Found ${report.summary.warnings} warning difference(s). Review recommended.\n`)
+      chalk.yellow(
+        `⚠ Found ${report.summary.warnings} warning difference(s). Review recommended.\n`
+      )
     );
     return 0;
   }

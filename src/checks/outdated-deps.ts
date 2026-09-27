@@ -61,33 +61,33 @@ export const outdatedDepsCheck: CheckDefinition = {
           timeout: 4000,
         });
 
-      if (res.stdout) {
-        try {
-          const parsed = JSON.parse(res.stdout);
-          const outdatedCount = Object.keys(parsed).length;
-          if (outdatedCount > 0) {
-            const list = Object.keys(parsed)
-              .slice(0, 5)
-              .map((dep) => {
-                const item = parsed[dep];
-                return `${dep}: current ${item.current} → latest ${item.latest}`;
-              });
+        if (res.stdout) {
+          try {
+            const parsed = JSON.parse(res.stdout);
+            const outdatedCount = Object.keys(parsed).length;
+            if (outdatedCount > 0) {
+              const list = Object.keys(parsed)
+                .slice(0, 5)
+                .map((dep) => {
+                  const item = parsed[dep];
+                  return `${dep}: current ${item.current} → latest ${item.latest}`;
+                });
 
-            return {
-              id: 'outdated-deps',
-              name: 'Dependencies Health & Versions',
-              category: 'deps',
-              status: 'warning',
-              message: `${outdatedCount} outdated dependenc${outdatedCount === 1 ? 'y' : 'ies'}`,
-              details: list,
-              fixable: false,
-              hint: `Run '${pmCmd} update' or 'tern deps' to inspect detailed dependency updates.`,
-            };
+              return {
+                id: 'outdated-deps',
+                name: 'Dependencies Health & Versions',
+                category: 'deps',
+                status: 'warning',
+                message: `${outdatedCount} outdated dependenc${outdatedCount === 1 ? 'y' : 'ies'}`,
+                details: list,
+                fixable: false,
+                hint: `Run '${pmCmd} update' or 'tern deps' to inspect detailed dependency updates.`,
+              };
+            }
+          } catch {
+            // If JSON parse fails, ignore
           }
-        } catch {
-          // If JSON parse fails, ignore
         }
-      }
       } catch {
         // Network offline or timeout, continue gracefully
       }
