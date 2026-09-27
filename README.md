@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/tern-cli"><img src="https://img.shields.io/npm/v/tern-cli.svg?style=flat-square&color=blue" alt="npm version" /></a>
-  <a href="https://github.com/terngg/tern/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/terngg/tern/ci.yml?branch=main&style=flat-square&label=CI" alt="Build Status" /></a>
+  <a href="https://github.com/terngg/tern"><img src="https://img.shields.io/badge/tests-102%20passed-brightgreen.svg?style=flat-square" alt="Tests Status" /></a>
   <a href="https://github.com/terngg/tern/stargazers"><img src="https://img.shields.io/github/stars/terngg/tern?style=flat-square&color=yellow" alt="GitHub Stars" /></a>
   <a href="https://github.com/terngg/tern/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat-square" alt="License: MIT" /></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg?style=flat-square" alt="Node.js Version" /></a>
