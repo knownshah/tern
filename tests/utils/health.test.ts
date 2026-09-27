@@ -71,4 +71,53 @@ describe('utils/health', () => {
     expect(score.percentage).toBe(100);
     expect(score.rating).toBe('Excellent');
   });
+
+  it('calculates categorized health breakdown accurately and does not penalize non-applicable categories', () => {
+    const results: CheckResult[] = [
+      {
+        id: 'node-1',
+        name: 'Node Version',
+        category: 'node',
+        status: 'success',
+        message: 'Pass',
+        fixable: false,
+      },
+      {
+        id: 'env-1',
+        name: 'Environment',
+        category: 'env',
+        status: 'error',
+        message: 'Missing DATABASE_URL',
+        fixable: true,
+      },
+      {
+        id: 'git-1',
+        name: 'Git Status',
+        category: 'git',
+        status: 'success',
+        message: 'Clean',
+        fixable: false,
+      },
+    ];
+
+    const score = calculateHealthScore(results);
+    expect(score.categories).toBeDefined();
+
+    // Runtime has 1 check and it succeeded
+    expect(score.categories?.Runtime.applicable).toBe(true);
+    expect(score.categories?.Runtime.percentage).toBe(100);
+
+    // Git has 1 check and it succeeded
+    expect(score.categories?.Git.applicable).toBe(true);
+    expect(score.categories?.Git.percentage).toBe(100);
+
+    // Environment has 1 check and it failed with error
+    expect(score.categories?.Environment.applicable).toBe(true);
+    expect(score.categories?.Environment.errors).toBe(1);
+    expect(score.categories?.Environment.percentage).toBeLessThanOrEqual(85);
+
+    // AI Agents and Deployment have no checks in this project -> not applicable
+    expect(score.categories?.Deployment.applicable).toBe(false);
+    expect(score.categories?.['AI Agents'].applicable).toBe(false);
+  });
 });

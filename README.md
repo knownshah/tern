@@ -1,7 +1,7 @@
 # Tern 🩺
 
 <p align="center">
-  <strong>One command to diagnose your development environment.</strong>
+  <strong>Developer Environment + AI Coding Environment Doctor</strong>
 </p>
 
 <p align="center">
@@ -13,27 +13,38 @@
 
 ---
 
-**Tern** is an open-source, production-ready developer environment doctor. It analyzes your project configuration, dependencies, environment variables, git repository, ports, and deployment setups to pinpoint misconfigurations and provide instant automated fixes.
+## What is Tern?
+
+**Tern** is an open-source CLI doctor for modern developer environments and AI coding workflows. It diagnoses traditional project issues (Node.js runtime mismatches, missing lockfiles, secret leakage, unpinned dependencies, port conflicts) alongside AI coding agents (OpenAI Codex, Claude Code, Gemini CLI, OpenCode) and Model Context Protocol (MCP) server configurations.
 
 ```
-Tern v0.1.0
-Scanning project...
+AI Development Environment
 
-✓ Node.js 20.11.0 (satisfies >=18.0.0)
-✓ Git repository detected (branch: main)
-⚠ 3 outdated dependencies
-✗ Missing environment variable: DATABASE_URL
-✗ .env accidentally tracked by Git
+Coding Agents
+✓ Codex             0.157.1
+✓ Claude Code       detected
+✓ Gemini CLI        detected
+⚠ OpenCode          configuration issue
 
-Project Health: [████████████████░░░░] 78% (Good)
-Run `tern fix` to resolve safe issues automatically.
+MCP Servers
+✓ filesystem        healthy
+✓ github            healthy
+✗ postgres          command not found
+
+Agent Instructions
+✓ AGENTS.md
+✓ CLAUDE.md
+⚠ GEMINI.md missing
+
+Agent Health: 82%
+2 warnings · 1 error
 ```
 
 ---
 
 ## ⚡ Quick Start
 
-Run instantly in any Node.js/JS/TS project without installing:
+Run instantly in any project directory without installation:
 
 ```bash
 npx tern doctor
@@ -58,159 +69,305 @@ yarn global add tern-cli
 
 | Command | Description |
 | :--- | :--- |
-| [`tern doctor`](#1-tern-doctor) | Scan project health, diagnose lockfiles, env vars, ports, and configs. |
-| [`tern fix`](#2-tern-fix) | Automatically repair safe issues (missing `.env`, duplicate lockfiles, `.gitignore`). |
-| [`tern env`](#3-tern-env) | Compare `.env` vs `.env.example` **without ever leaking secret values**. |
-| [`tern port <number>`](#4-tern-port-number) | Find processes occupying a port across macOS, Linux, and Windows, with kill option. |
-| [`tern clean`](#5-tern-clean) | Reclaim disk space by clearing build folders and caches (`dist`, `.next`, `.turbo`, etc.). |
-| [`tern deps`](#6-tern-deps) | Inspect outdated packages and run security vulnerability audits. |
-| [`tern git`](#7-tern-git) | Check uncommitted/unpushed changes and scan for leaked API keys or credentials. |
-| [`tern deploy`](#8-tern-deploy) | Validate deployment readiness (platform configs, build script, hardcoded localhost URLs). |
-| [`tern report`](#9-tern-report) | Generate a comprehensive Markdown report ready to paste into GitHub Issues. |
+| [`tern doctor`](#1-tern-doctor) | Comprehensive project health scan (fast by default, `--deep` for network audits). |
+| [`tern agent`](#2-tern-agent) | Diagnose readiness of AI coding tools (Codex, Claude Code, Gemini CLI, OpenCode, MCP). |
+| [`tern explain`](#3-tern-explain) | Explain diagnosed issues using an AI provider with sanitized diagnostic metadata. |
+| [`tern why <error>`](#4-tern-why-error) | Explain common runtime errors locally first, or with `--ai` fallback. |
+| [`tern snapshot`](#5-tern-snapshot) | Export a non-sensitive environment configuration snapshot in stable JSON. |
+| [`tern diff <local> <remote>`](#6-tern-diff-local-remote) | Compare two snapshots to solve "works on my machine, fails on VPS". |
+| [`tern watch`](#7-tern-watch) | Watch config files with debounce and report changes cleanly. |
+| [`tern fix`](#8-tern-fix) | Automatically repair safe issues (create `.env`, fix `.gitignore`, missing deps). |
+| [`tern env`](#9-tern-env) | Compare `.env` against `.env.example` **without ever exposing secret values**. |
+| [`tern port <number>`](#10-tern-port-number) | Inspect processes on a port across macOS, Linux, and Windows, with kill option. |
+| [`tern clean`](#11-tern-clean) | Reclaim disk space by clearing caches and build folders (`dist`, `.next`, etc.). |
+| [`tern deps`](#12-tern-deps) | Audit dependency versions, unpinned packages, and vulnerabilities. |
+| [`tern git`](#13-tern-git) | Check branch status, uncommitted files, and scan for leaked secrets. |
+| [`tern deploy`](#14-tern-deploy) | Validate deployment readiness (platform configs, build script, localhost URLs). |
+| [`tern report`](#15-tern-report) | Generate a markdown report categorized by health domains for GitHub Issues. |
 
 ---
 
 ### 1. `tern doctor`
 
-Diagnoses your entire developer environment in seconds:
-- **Node.js runtime**: Checks your active Node version against `engines.node`, `.nvmrc`, or `.node-version`.
-- **Package Manager & Lockfiles**: Detects active package manager (pnpm, npm, yarn, bun) and warns on conflicting duplicate lockfiles.
-- **Git Repository**: Checks if Git is initialized, branch state, and uncommitted modifications.
-- **`package.json`**: Validates JSON syntax, essential metadata, build/dev scripts, and whether `node_modules` is installed.
-- **Environment Variables**: Compares `.env.example` against `.env` and flags missing keys.
-- **Security Check**: Verifies that `.env` files are ignored in `.gitignore` and not committed to Git.
-- **Port Conflicts**: Inspects common development ports (3000, 5173, 8080, etc.) for existing zombie processes.
-- **Deployment**: Checks for Dockerfile, Vercel, Netlify, or Fly.io configurations.
+Scans your developer environment and reports categorized health scores:
+- **Fast checks (default)**: Node.js version, lockfiles, Git status, package installation, environment variables consistency, port conflicts, deployment configs, agent instructions, and MCP config syntax.
+- **Heavy checks (`--deep`)**: Dependency updates against remote registries and MCP server startup validation.
 
 ```bash
-# Standard check
-npx tern doctor
+# Standard fast check
+tern doctor
+
+# Deep check including network audits
+tern doctor --deep
 
 # Fail on warnings (exit code 1)
-npx tern doctor --strict
+tern doctor --strict
 
 # Output machine-readable JSON for CI pipelines
-npx tern doctor --json
+tern doctor --json
 ```
 
-### 2. `tern fix`
+---
 
-Applies automated repairs to safe-to-fix problems with interactive confirmation:
-- Creates missing `.env` from `.env.example` with placeholder keys.
-- Appends missing required keys into existing `.env` files.
-- Adds `.env` ignore rules to `.gitignore`.
-- Removes accidentally committed `.env` files from Git index (`git rm --cached`).
-- Deletes redundant duplicate lockfiles.
-- Runs package manager install if `node_modules` is missing.
+### 2. `tern agent`
+
+Inspects AI coding environment readiness across platforms:
+- **Coding Agents**: Detects installation, version, and configuration for Codex, Claude Code, Gemini CLI, and OpenCode.
+- **MCP Servers**: Scans project and OS-level configurations for valid executables, transport types (`stdio`, `sse`), duplicate definitions, and missing environment variables.
+- **Agent Instructions**: Verifies presence of `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`.
 
 ```bash
-# Interactive mode (asks confirmation before applying changes)
-npx tern fix
+# Full agent environment scan
+tern agent
 
-# Non-interactive mode (ideal for CI/CD)
-npx tern fix --yes
+# Inspect MCP servers only
+tern agent --mcp
+
+# Machine-readable JSON
+tern agent --json
+
+# Fail if any warning or error is present (exit code 1)
+tern agent --strict
 ```
 
-### 3. `tern env`
+---
 
-Deep inspection of environment configuration. **Never exposes secret values**:
+### 3. `tern explain`
+
+Explains diagnosed issues using AI. Tern generates a **sanitized diagnostic payload** containing only runtime metadata (Node version, OS, framework) and check messages. **No environment values, source code, or credentials are sent.**
+
+Supported AI providers:
+- **DeepSeek** (`DEEPSEEK_API_KEY`)
+- **OpenAI-compatible** (`OPENAI_API_KEY`, optional `OPENAI_BASE_URL`)
+- **OpenRouter** (`OPENROUTER_API_KEY`, optional `OPENROUTER_BASE_URL`)
+- **Ollama** (Local endpoint, default: `http://127.0.0.1:11434`)
+
+```bash
+# Auto-detects configured provider from environment
+tern explain
+
+# Explicit provider
+tern explain --provider deepseek
+tern explain --provider openai
+tern explain --provider ollama
+
+# Output explanation in JSON
+tern explain --json
+```
+
+---
+
+### 4. `tern why <error>`
+
+Explains developer errors using a built-in local rule engine:
+- `EADDRINUSE` (detects occupying port and process PID)
+- `MODULE_NOT_FOUND` / `Cannot find module`
+- `ENOENT` / `no such file or directory`
+- `EACCES` / `permission denied` (privileged ports < 1024 or filesystem permissions)
+- `command not found`
+- `npm peer dependency conflict` (ERESOLVE)
+- `Git detached HEAD`
+- `missing environment variable`
+- `connection refused` (ECONNREFUSED)
+- `TypeScript common errors` (TS2304, TS2322, TS2345, TS7006, TS2307)
+
+```bash
+# Local explanation (no network/AI required)
+tern why "EADDRINUSE: address already in use :::3000"
+
+# Module not found explanation
+tern why "Cannot find module 'express'"
+
+# If no local rule matches, delegate to AI
+tern why "Webpack compilation failed: unexpected token" --ai
+```
+
+---
+
+### 5. `tern snapshot`
+
+Exports an environment snapshot in a stable, non-sensitive JSON schema. Captures OS, architecture, Node version, package manager, Git state, framework, safe dependency ranges, environment variable key names (without values), port states, and config presence:
+
+```bash
+# Print snapshot to terminal
+tern snapshot
+
+# Save snapshot to file
+tern snapshot -o local.json
+```
+
+---
+
+### 6. `tern diff <source> <target>`
+
+Compares two environment snapshots to isolate discrepancies between machines (e.g. laptop vs VPS):
+- **Informational**: Architecture (arm64 vs x64), OS platform.
+- **Warnings**: Minor Node or package manager version differences.
+- **Blocking**: Major Node version mismatches, missing required environment variables, or port conflicts.
+
+```bash
+# Visual table output
+tern diff local.json vps.json
+
+# Machine-readable JSON output
+tern diff local.json vps.json --json
+```
+
+---
+
+### 7. `tern watch`
+
+Monitors project configuration files (`.env`, `.env.example`, `package.json`, lockfiles, MCP configs, `AGENTS.md`, `Dockerfile`) with debouncing, reporting changes cleanly without terminal spam.
+
+```bash
+tern watch
+
+# Custom debounce interval (milliseconds)
+tern watch --debounce 500
+```
+
+---
+
+### 8. `tern fix`
+
+Applies automated repairs to safe-to-fix issues:
+- Creates missing `.env` from `.env.example` with placeholder keys.
+- Appends missing keys into existing `.env` files.
+- Adds `.env` ignore patterns to `.gitignore`.
+- Removes accidentally committed `.env` files from Git index (`git rm --cached`).
+
+```bash
+# Interactive mode
+tern fix
+
+# Non-interactive mode (for CI/CD)
+tern fix --yes
+```
+
+---
+
+### 9. `tern env`
+
+Compares `.env` against `.env.example` **without displaying or logging variable values**:
 
 ```bash
 # Compare .env with .env.example
-npx tern env
+tern env
 
-# Automatically append missing placeholder keys to your local .env
-npx tern env --sync
+# Append missing placeholder keys to your local .env
+tern env --sync
 
 # Custom paths
-npx tern env --example .env.template --env .env.local
+tern env --example .env.template --env .env.local
 ```
 
-### 4. `tern port <number>`
+---
 
-Cross-platform active port inspector (macOS, Linux, Windows):
+### 10. `tern port <number>`
+
+Inspects processes occupying a port across macOS, Linux, and Windows:
 
 ```bash
-# Check if port 3000 is occupied
-npx tern port 3000
+# Inspect port 3000
+tern port 3000
 
 # Terminate process with confirmation
-npx tern port 3000 --kill
+tern port 3000 --kill
 
 # Force terminate without confirmation
-npx tern port 3000 --kill --force --yes
+tern port 3000 --kill --force --yes
 ```
 
-### 5. `tern clean`
+---
+
+### 11. `tern clean`
 
 Clears build artifacts and caches (`node_modules/.cache`, `dist`, `build`, `.next`, `.turbo`, `.nuxt`, `coverage`, etc.):
 
 ```bash
-# Inspect and delete caches with confirmation
-npx tern clean
+# Calculate reclaimable disk space without deleting
+tern clean --dry-run
 
-# Dry run: calculate reclaimable disk space without deleting
-npx tern clean --dry-run
+# Delete caches with confirmation
+tern clean
 
-# Skip confirmation
-npx tern clean --yes
+# Skip confirmation prompt
+tern clean --yes
 
-# Also include node_modules
-npx tern clean --all
+# Also include node_modules root
+tern clean --all
 ```
 
-### 6. `tern deps`
+---
 
-Analyzes project dependencies:
+### 12. `tern deps`
+
+Analyzes dependencies for wildcard versions and outdated packages:
 
 ```bash
-# Inspect outdated dependencies and audit vulnerabilities
-npx tern deps
+tern deps
 
-# Attempt automated vulnerability fixes
-npx tern deps --fix
+# Attempt automated vulnerability remediation
+tern deps --fix
 ```
 
-### 7. `tern git`
+---
 
-Examines Git health and scans working tree & commits for leaked credentials:
+### 13. `tern git`
+
+Examines Git repository health and scans working tree and commits for leaked credentials:
 
 ```bash
-# Run Git diagnostics and secret scan
-npx tern git
+tern git
 ```
 
-*Patterns scanned include AWS keys, GitHub tokens, Slack tokens, Stripe keys, Private Key blocks, and Google API keys (values are redacted in output).*
+*Scans for AWS keys, GitHub tokens, Slack tokens, Stripe keys, Private Key blocks, and Google API keys. All detected values are automatically redacted in the output.*
 
-### 8. `tern deploy`
+---
 
-Pre-flight checklist before deploying to production:
+### 14. `tern deploy`
+
+Pre-flight verification before production deployments:
+- Validates Dockerfile, `vercel.json`, and `netlify.toml` syntax.
+- Checks that `.env.production` is ignored in Git.
+- Scans source files for hardcoded `http://localhost:` or `http://127.0.0.1:` URLs.
+- Verifies that `build` script is declared in `package.json`.
 
 ```bash
-npx tern deploy
+tern deploy
 ```
-- Ensures `.env.production` is never committed to Git.
-- Scans source code for hardcoded `http://localhost:` or `http://127.0.0.1:` URLs.
-- Validates Dockerfile / `vercel.json` / `netlify.toml` syntax.
-- Verifies `build` script presence in `package.json`.
 
-### 9. `tern report`
+---
 
-Generates a GitHub-flavored Markdown diagnostic report ready to share:
+### 15. `tern report`
+
+Generates a Markdown report with categorized health breakdown ready to paste into GitHub Issues:
 
 ```bash
-# Print report to terminal
-npx tern report
+# Output to stdout
+tern report
 
-# Save report directly to file
-npx tern report -o tern-report.md
+# Save directly to file
+tern report -o tern-report.md
 ```
+
+---
+
+## 🔒 Security & Privacy
+
+Tern is designed with a strict security-first architecture:
+
+1. **Local by Default**: All diagnostics, rule-matching, git inspections, port checks, and snapshot collections run 100% locally on your machine.
+2. **Opt-in AI Features**: AI features (`tern explain`, `tern why --ai`) are strictly opt-in and only run when invoked by the user.
+3. **Strict Sanitization**: When AI features are used, Tern transmits only structured diagnostic metadata (Node version, OS platform, framework, and sanitized issue messages). It never sends `.env` file contents, API keys, credentials, tokens, private keys, or source code files.
+4. **Centralized Redaction**: Every output channel (terminal, markdown report, snapshot, and AI requests) passes through centralized redaction filters that scrub database connection passwords, GitHub tokens, AWS keys, JWTs, and private keys.
+5. **No Plaintext Secrets in Config**: Tern does not store API keys in project configuration files (`.ternrc.json`). API keys are read directly from environment variables (`DEEPSEEK_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`).
 
 ---
 
 ## ⚙️ Configuration (`.ternrc.json`)
 
-You can customize Tern's behavior by placing a `.ternrc.json` in your project root:
+Customize Tern's behavior with a `.ternrc.json` file in your project root:
 
 ```json
 {
@@ -230,18 +387,9 @@ You can customize Tern's behavior by placing a `.ternrc.json` in your project ro
 
 ---
 
-## 🔒 Security & Privacy
-
-Tern is designed from the ground up with a strict security-first philosophy:
-- **Zero Secret Exposure**: Environment values are never printed, stored, or sent anywhere. Tern only handles variable names/keys.
-- **Leak Detection**: Tracks and prevents secrets from being accidentally pushed to Git.
-- **Local Execution**: All diagnostic logic runs 100% locally on your machine.
-
----
-
 ## 🛠️ CI / CD Integration
 
-Use Tern in GitHub Actions to prevent bad merges or misconfigured PRs:
+Use Tern in GitHub Actions to catch environment misconfigurations before merging:
 
 ```yaml
 name: Environment Doctor
@@ -258,25 +406,25 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: npx tern doctor --strict
+      - run: npx tern agent --strict
 ```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are warmly welcome!
+Contributions are welcome!
 
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/tern-tools/tern.git`
-3. Install dependencies: `pnpm install`
-4. Run tests: `pnpm test`
-5. Create a branch: `git checkout -b feature/my-new-check`
-6. Commit changes: `git commit -m "feat: add ruby check"`
-7. Push and open a Pull Request!
+1. Clone repository: `git clone https://github.com/tern-tools/tern.git`
+2. Install dependencies: `pnpm install`
+3. Run tests: `pnpm test`
+4. Run linter: `pnpm lint`
+5. Build: `pnpm build`
+6. Open a Pull Request!
 
 ---
 

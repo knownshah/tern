@@ -7,6 +7,16 @@ export * from './utils/git.js';
 export * from './utils/ports.js';
 export * from './utils/health.js';
 export * from './utils/exec.js';
+export * from './utils/redact.js';
+
+export * from './agent/index.js';
+export * from './mcp/index.js';
+export * from './why/index.js';
+export * from './snapshot/index.js';
+export * from './diff/index.js';
+export * from './ai/index.js';
+export * from './watch/index.js';
+export * from './plugins/index.js';
 
 export { doctorCommand } from './commands/doctor.js';
 export { fixCommand } from './commands/fix.js';
@@ -17,3 +27,9 @@ export { depsCommand } from './commands/deps.js';
 export { gitCommand } from './commands/git.js';
 export { deployCommand } from './commands/deploy.js';
 export { reportCommand } from './commands/report.js';
+export { agentCommand } from './commands/agent.js';
+export { explainCommand } from './commands/explain.js';
+export { whyCommand } from './commands/why.js';
+export { snapshotCommand } from './commands/snapshot.js';
+export { diffCommand } from './commands/diff.js';
+export { watchCommand } from './commands/watch.js';

@@ -71,6 +71,26 @@ export function formatHealthScore(score: HealthScore): string {
   return `${chalk.bold('Project Health:')} [${bar}] ${scoreText} ${ratingText}`;
 }
 
+export function formatCategorizedHealthScore(score: HealthScore): string {
+  const lines: string[] = [];
+  lines.push(chalk.bold('Project Health'));
+  lines.push(`${'Overall'.padEnd(16)} ${chalk.bold(`${score.percentage}%`)}`);
+  lines.push('');
+
+  if (score.categories) {
+    for (const [catName, catHealth] of Object.entries(score.categories)) {
+      if (!catHealth.applicable) continue;
+      let color = chalk.green;
+      if (catHealth.percentage < 50) color = chalk.red;
+      else if (catHealth.percentage < 80) color = chalk.yellow;
+
+      lines.push(`${catName.padEnd(16)} ${color(`${catHealth.percentage}%`)}`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 export function renderBanner(title: string, subtitle?: string): string {
   const content = subtitle
     ? `${chalk.bold.cyan(title)}\n${chalk.dim(subtitle)}`

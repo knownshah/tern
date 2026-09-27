@@ -11,12 +11,18 @@ import { depsCommand } from './commands/deps.js';
 import { gitCommand } from './commands/git.js';
 import { deployCommand } from './commands/deploy.js';
 import { reportCommand } from './commands/report.js';
+import { agentCommand } from './commands/agent.js';
+import { explainCommand } from './commands/explain.js';
+import { whyCommand } from './commands/why.js';
+import { snapshotCommand } from './commands/snapshot.js';
+import { diffCommand } from './commands/diff.js';
+import { watchCommand } from './commands/watch.js';
 
 const program = new Command();
 
 program
   .name('tern')
-  .description('One command to diagnose your development environment.')
+  .description('One command to diagnose your development environment and AI coding setup.')
   .version('0.1.0', '-v, --version', 'Output current Tern version')
   .option('--cwd <path>', 'Specify custom project working directory', process.cwd())
   .option('--verbose', 'Show detailed diagnostic messages', false);
@@ -27,6 +33,7 @@ program
   .description('Scan project health, diagnose environment, lockfiles, env vars, and ports')
   .option('--strict', 'Fail with exit code 1 even on warnings', false)
   .option('--json', 'Output results in JSON format for CI/CD', false)
+  .option('--deep', 'Run heavy diagnostics (dependency audits, remote registries, MCP startups)', false)
   .action(async (cmdOptions) => {
     try {
       const globalOpts = program.opts();
@@ -35,6 +42,7 @@ program
         verbose: globalOpts.verbose,
         strict: cmdOptions.strict,
         json: cmdOptions.json,
+        deep: cmdOptions.deep,
       });
       process.exit(exitCode);
     } catch (err: any) {
@@ -200,6 +208,132 @@ program
       const exitCode = await reportCommand({
         cwd: globalOpts.cwd,
         output: cmdOptions.output,
+      });
+      process.exit(exitCode);
+    } catch (err: any) {
+      console.error(chalk.red(`\nFatal: ${err?.message || 'An unexpected error occurred'}`));
+      process.exit(1);
+    }
+  });
+
+// 10. Agent command
+program
+  .command('agent')
+  .description('Diagnose AI coding readiness (Codex, Claude Code, Gemini CLI, OpenCode, MCP servers)')
+  .option('--json', 'Output machine-readable JSON without decorative output', false)
+  .option('--strict', 'Fail with exit code 1 if any warnings or errors are present', false)
+  .option('--mcp', 'Run only Model Context Protocol (MCP) server checks', false)
+  .option('--deep', 'Run deep startup and timeout validation on MCP servers', false)
+  .action(async (cmdOptions) => {
+    try {
+      const globalOpts = program.opts();
+      const exitCode = await agentCommand({
+        cwd: globalOpts.cwd,
+        json: cmdOptions.json,
+        strict: cmdOptions.strict,
+        mcp: cmdOptions.mcp,
+        deep: cmdOptions.deep,
+      });
+      process.exit(exitCode);
+    } catch (err: any) {
+      console.error(chalk.red(`\nFatal: ${err?.message || 'An unexpected error occurred'}`));
+      process.exit(1);
+    }
+  });
+
+// 11. Explain command
+program
+  .command('explain')
+  .description('Explain diagnosed environment issues using AI with sanitized diagnostic metadata')
+  .option('--provider <name>', 'Specify AI provider (deepseek, openai, openrouter, ollama)')
+  .option('--json', 'Output explanation in JSON format', false)
+  .action(async (cmdOptions) => {
+    try {
+      const globalOpts = program.opts();
+      const exitCode = await explainCommand({
+        cwd: globalOpts.cwd,
+        provider: cmdOptions.provider,
+        json: cmdOptions.json,
+      });
+      process.exit(exitCode);
+    } catch (err: any) {
+      console.error(chalk.red(`\nFatal: ${err?.message || 'An unexpected error occurred'}`));
+      process.exit(1);
+    }
+  });
+
+// 12. Why command
+program
+  .command('why <errorMessage>')
+  .description('Explain common developer errors locally (EADDRINUSE, ENOENT, detached HEAD, etc.) or with AI')
+  .option('--ai', 'Use AI provider if local rules cannot explain the error', false)
+  .option('--provider <name>', 'Specify AI provider when using --ai')
+  .option('--json', 'Output error analysis in JSON format', false)
+  .action(async (errorMessage, cmdOptions) => {
+    try {
+      const globalOpts = program.opts();
+      const exitCode = await whyCommand(errorMessage, {
+        cwd: globalOpts.cwd,
+        ai: cmdOptions.ai,
+        provider: cmdOptions.provider,
+        json: cmdOptions.json,
+      });
+      process.exit(exitCode);
+    } catch (err: any) {
+      console.error(chalk.red(`\nFatal: ${err?.message || 'An unexpected error occurred'}`));
+      process.exit(1);
+    }
+  });
+
+// 13. Snapshot command
+program
+  .command('snapshot')
+  .description('Capture safe, non-sensitive environment metadata into JSON')
+  .option('-o, --output <file>', 'Save snapshot to specified file path')
+  .action(async (cmdOptions) => {
+    try {
+      const globalOpts = program.opts();
+      const exitCode = await snapshotCommand({
+        cwd: globalOpts.cwd,
+        output: cmdOptions.output,
+      });
+      process.exit(exitCode);
+    } catch (err: any) {
+      console.error(chalk.red(`\nFatal: ${err?.message || 'An unexpected error occurred'}`));
+      process.exit(1);
+    }
+  });
+
+// 14. Diff command
+program
+  .command('diff <sourceJson> <targetJson>')
+  .description('Compare two environment snapshots to identify VPS vs local mismatches')
+  .option('--json', 'Output difference analysis in machine-readable JSON', false)
+  .action(async (sourceJson, targetJson, cmdOptions) => {
+    try {
+      const globalOpts = program.opts();
+      const exitCode = await diffCommand(sourceJson, targetJson, {
+        cwd: globalOpts.cwd,
+        json: cmdOptions.json,
+      });
+      process.exit(exitCode);
+    } catch (err: any) {
+      console.error(chalk.red(`\nFatal: ${err?.message || 'An unexpected error occurred'}`));
+      process.exit(1);
+    }
+  });
+
+// 15. Watch command
+program
+  .command('watch')
+  .description('Watch project configs (.env, package.json, MCP configs) and trigger instant checks on changes')
+  .option('--debounce <ms>', 'Debounce wait interval in milliseconds', '400')
+  .action(async (cmdOptions) => {
+    try {
+      const globalOpts = program.opts();
+      const exitCode = await watchCommand({
+        cwd: globalOpts.cwd,
+        debounceMs: parseInt(cmdOptions.debounce, 10) || 400,
       });
       process.exit(exitCode);
     } catch (err: any) {

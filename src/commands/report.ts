@@ -6,6 +6,7 @@ import ora from 'ora';
 import { createContext, runAllChecks } from '../checks/index.js';
 import { calculateHealthScore } from '../utils/health.js';
 import { execCommand } from '../utils/exec.js';
+import { redactSecrets } from '../utils/redact.js';
 
 export interface ReportOptions {
   cwd?: string;
@@ -72,9 +73,27 @@ export async function reportCommand(options: ReportOptions = {}): Promise<number
     `| :---: | :--- | :--- | :--- |`,
   ];
 
+  if (score.categories) {
+    mdLines.push(``);
+    mdLines.push(`### Category Breakdown`);
+    mdLines.push(``);
+    mdLines.push(`| Category | Health | Status |`);
+    mdLines.push(`| :--- | :---: | :--- |`);
+    for (const [catName, catHealth] of Object.entries(score.categories)) {
+      if (!catHealth.applicable) continue;
+      const statusText =
+        catHealth.errors > 0
+          ? '❌ Issues Detected'
+          : catHealth.warnings > 0
+            ? '⚠️ Warnings'
+            : '✅ Healthy';
+      mdLines.push(`| **${catName}** | ${catHealth.percentage}% | ${statusText} |`);
+    }
+  }
+
   for (const r of results) {
     const emoji = statusEmoji[r.status] || '❓';
-    const cleanMsg = r.message.replace(/\|/g, '\\|');
+    const cleanMsg = redactSecrets(r.message.replace(/\|/g, '\\|'));
     mdLines.push(`| ${emoji} | \`${r.category}\` | **${r.name}** | ${cleanMsg} |`);
   }
 
@@ -86,7 +105,7 @@ export async function reportCommand(options: ReportOptions = {}): Promise<number
     mdLines.push(`## 💡 Recommended Remediation Steps`);
     mdLines.push(``);
     for (const item of issuesWithHints) {
-      mdLines.push(`- **${item.name}**: ${item.hint}`);
+      mdLines.push(`- **${item.name}**: ${redactSecrets(item.hint!)}`);
     }
   }
 

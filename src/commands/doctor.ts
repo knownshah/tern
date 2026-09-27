@@ -10,6 +10,7 @@ export interface DoctorOptions {
   verbose?: boolean;
   strict?: boolean;
   json?: boolean;
+  deep?: boolean;
 }
 
 export async function doctorCommand(options: DoctorOptions = {}): Promise<number> {
@@ -17,28 +18,32 @@ export async function doctorCommand(options: DoctorOptions = {}): Promise<number
   const verbose = Boolean(options.verbose);
   const strict = Boolean(options.strict);
   const jsonOutput = Boolean(options.json);
+  const deep = Boolean(options.deep);
 
-  const context = await createContext(cwd, verbose);
+  const context = await createContext(cwd, verbose, deep);
 
   if (!jsonOutput) {
     console.log(chalk.bold(`\nTern v0.1.0`));
   }
 
-  const spinner = ora({
-    text: 'Scanning project...',
-    color: 'cyan',
-    isSilent: jsonOutput,
-  }).start();
+  const spinner = !jsonOutput
+    ? ora({
+        text: 'Scanning project...',
+        color: 'cyan',
+      }).start()
+    : null;
 
   const results: CheckResult[] = [];
 
   try {
     const checkResults = await runAllChecks(context, (check) => {
-      spinner.text = `Scanning: ${check.name}...`;
+      if (spinner) {
+        spinner.text = `Scanning: ${check.name}...`;
+      }
     });
     results.push(...checkResults);
   } finally {
-    spinner.stop();
+    spinner?.stop();
   }
 
   const score = calculateHealthScore(results);

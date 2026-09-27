@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { doctorCommand } from '../../src/commands/doctor.js';
 import { createTestDir, type TestDirectory } from '../helpers/test-dir.js';
+import { hasAnsiCodes } from '../helpers/ansi.js';
 
 describe('commands/doctor', () => {
   let testDir: TestDirectory;
@@ -13,7 +14,7 @@ describe('commands/doctor', () => {
     await testDir.cleanup();
   });
 
-  it('runs doctor and outputs json correctly', async () => {
+  it('runs doctor and outputs strictly valid single JSON document without ANSI or logger text', async () => {
     await testDir.writeFile(
       'package.json',
       JSON.stringify({
@@ -37,9 +38,14 @@ describe('commands/doctor', () => {
 
     consoleSpy.mockRestore();
 
-    expect(output).toContain('"health"');
-    const parsed = JSON.parse(output);
-    expect(parsed.version).toBe('0.1.0');
+    // Verify raw stdout contains no ANSI escape sequences
+    expect(hasAnsiCodes(output)).toBe(false);
+
+    // Equivalent to jq . / JSON.parse() on entire stdout
+    const parsed = JSON.parse(output.trim());
+    expect(parsed).toHaveProperty('version', '0.1.0');
+    expect(parsed).toHaveProperty('timestamp');
+    expect(parsed).toHaveProperty('health');
     expect(parsed.results).toBeInstanceOf(Array);
     expect(exitCode).toBe(0);
   });

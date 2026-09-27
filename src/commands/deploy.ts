@@ -17,6 +17,100 @@ interface LocalhostFinding {
   match: string;
 }
 
+export interface LocalProviderCheckContext {
+  file: string;
+  line: number;
+  lineContent: string;
+  prevLineContent?: string;
+  matchedUrl: string;
+  fileContent?: string;
+}
+
+function parseUrlSafe(urlString: string): URL | null {
+  try {
+    return new URL(urlString);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Checks whether a detected localhost / 127.0.0.1 URL is a legitimate default endpoint
+ * for a local-only service/AI provider (e.g., Ollama, LM Studio, local LLMs) rather than
+ * an unintentional hardcoded production application endpoint.
+ */
+export function isLocalProviderEndpoint(context: LocalProviderCheckContext): boolean {
+  const { lineContent, prevLineContent = '', matchedUrl, file, fileContent = '' } = context;
+
+  // 1. Known official local AI provider default ports:
+  // - 11434: Ollama standard port (default: http://127.0.0.1:11434 or http://localhost:11434)
+  // - 1234: LM Studio standard local API port
+  const parsedUrl = parseUrlSafe(matchedUrl);
+  if (parsedUrl) {
+    const port = parsedUrl.port;
+    if (port === '11434' || port === '1234') {
+      return true;
+    }
+  }
+
+  // 2. Structured comment exemption on current or previous line:
+  // e.g. // local-provider, // local-only, // tern-ignore, /* local-provider */
+  const combinedLines = `${prevLineContent}\n${lineContent}`.toLowerCase();
+  if (
+    combinedLines.includes('local-provider') ||
+    combinedLines.includes('local-only') ||
+    combinedLines.includes('tern-ignore') ||
+    combinedLines.includes('local ai provider')
+  ) {
+    return true;
+  }
+
+  // 3. Environment-configurable local provider pattern:
+  // e.g. process.env.OLLAMA_HOST || 'http://127.0.0.1:11434'
+  // e.g. process.env.LOCAL_LLM_URL || '...'
+  // e.g. process.env.LOCAL_PROVIDER_URL || '...'
+  const envVarMatch = lineContent.match(
+    /process\.env\.([A-Z0-9_]+)\s*(?:\|\||\?\?)\s*['"`]https?:\/\/(?:localhost|127\.0\.0\.1)/i
+  );
+  if (envVarMatch) {
+    const varName = envVarMatch[1].toUpperCase();
+    const isLocalVar =
+      varName.includes('OLLAMA') ||
+      varName.includes('LMSTUDIO') ||
+      varName.includes('LM_STUDIO') ||
+      varName.includes('LOCAL_AI') ||
+      varName.includes('LOCALAI') ||
+      varName.includes('LOCAL_LLM') ||
+      varName.includes('LOCAL_PROVIDER') ||
+      varName.includes('LOCAL_MODEL') ||
+      varName.includes('LOCAL_SERVICE') ||
+      varName.includes('EMULATOR');
+
+    if (isLocalVar) {
+      return true;
+    }
+  }
+
+  // 4. File-level local provider metadata/context:
+  // If the file is specifically an AI/local provider definition (e.g. OllamaProvider class)
+  // and the line contains local provider identifiers:
+  const lineLower = lineContent.toLowerCase();
+  const fileLower = file.toLowerCase();
+
+  const isLocalProviderFile =
+    fileContent.includes("id = 'ollama'") ||
+    fileContent.includes('id = "ollama"') ||
+    fileContent.includes('OllamaProvider') ||
+    fileContent.includes('LocalAIProvider') ||
+    fileLower.includes('ollama');
+
+  if (isLocalProviderFile && (lineLower.includes('ollama') || lineLower.includes('local'))) {
+    return true;
+  }
+
+  return false;
+}
+
 export async function deployCommand(options: DeployOptions = {}): Promise<number> {
   const cwd = options.cwd || process.cwd();
   console.log(chalk.bold(`\nTern Deployment Readiness Inspector`));
@@ -136,6 +230,19 @@ export async function deployCommand(options: DeployOptions = {}): Promise<number
         const matches = line.match(localhostRegex);
         if (matches) {
           for (const m of matches) {
+            if (
+              isLocalProviderEndpoint({
+                file: relFile,
+                line: i + 1,
+                lineContent: line,
+                prevLineContent: i > 0 ? lines[i - 1] : '',
+                matchedUrl: m,
+                fileContent: content,
+              })
+            ) {
+              continue;
+            }
+
             localhostFindings.push({
               file: relFile,
               line: i + 1,
@@ -207,7 +314,9 @@ export async function deployCommand(options: DeployOptions = {}): Promise<number
   }
 
   console.log(
-    chalk.green.bold('✓ Deployment readiness check PASSED! Project is ready for production.\n')
+    chalk.green.bold(
+      '✓ Deployment readiness checks passed. No deployment configuration blockers detected.\n'
+    )
   );
   return 0;
 }

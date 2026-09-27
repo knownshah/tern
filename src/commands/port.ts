@@ -46,10 +46,18 @@ export async function portCommand(
   }
   console.log();
 
-  const wantsKill = Boolean(options.kill || options.yes || options.force);
-  let shouldKill = wantsKill;
+  // Read-only inspect mode by default
+  if (!options.kill) {
+    console.log(
+      chalk.cyan('To terminate this process, run: ') +
+        chalk.bold.cyan(`tern port ${port} --kill\n`)
+    );
+    return 0;
+  }
 
-  if (!wantsKill) {
+  let shouldKill = Boolean(options.yes);
+
+  if (!shouldKill) {
     try {
       shouldKill = await confirm({
         message: `Do you want to terminate process ${proc.name} (PID: ${proc.pid}) on port ${port}?`,

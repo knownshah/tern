@@ -1,7 +1,19 @@
 export type CheckStatus = 'success' | 'warning' | 'error' | 'info' | 'skipped';
 
+export type CheckSeverity = 'error' | 'warning' | 'info';
+
 export type CheckCategory =
-  'node' | 'git' | 'package' | 'env' | 'port' | 'deploy' | 'deps' | 'security';
+  | 'node'
+  | 'git'
+  | 'package'
+  | 'env'
+  | 'port'
+  | 'deploy'
+  | 'deps'
+  | 'security'
+  | 'agent'
+  | 'mcp'
+  | 'runtime';
 
 export interface FixResult {
   success: boolean;
@@ -13,6 +25,7 @@ export interface CheckResult {
   name: string;
   category: CheckCategory;
   status: CheckStatus;
+  severity?: CheckSeverity;
   message: string;
   details?: string[];
   fixable: boolean;
@@ -26,6 +39,7 @@ export interface TernConfig {
   cleanPaths?: string[];
   minNodeVersion?: string;
   strict?: boolean;
+  deep?: boolean;
   deploy?: {
     checkLocalhost?: boolean;
     requiredConfigs?: string[];
@@ -38,14 +52,35 @@ export interface CheckContext {
   pkgPath?: string;
   config?: TernConfig;
   verbose?: boolean;
+  deep?: boolean;
 }
 
 export interface CheckDefinition {
   id: string;
   name: string;
   category: CheckCategory;
+  severity?: CheckSeverity;
   description: string;
+  deep?: boolean;
   run: (context: CheckContext) => Promise<CheckResult>;
+  fix?: (context: CheckContext) => Promise<FixResult>;
+}
+
+export interface TernPlugin {
+  name: string;
+  version?: string;
+  description?: string;
+  checks?: CheckDefinition[];
+}
+
+export interface CategoryHealth {
+  category: string;
+  percentage: number;
+  total: number;
+  passed: number;
+  warnings: number;
+  errors: number;
+  applicable: boolean;
 }
 
 export interface HealthScore {
@@ -55,4 +90,5 @@ export interface HealthScore {
   warnings: number;
   errors: number;
   rating: 'Excellent' | 'Good' | 'Fair' | 'Poor' | 'Critical';
+  categories?: Record<string, CategoryHealth>;
 }

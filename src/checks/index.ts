@@ -12,6 +12,8 @@ import { gitEnvTrackedCheck } from './git-env-tracked.js';
 import { portConflictsCheck } from './port-conflicts.js';
 import { deployConfigCheck } from './deploy-config.js';
 import { outdatedDepsCheck } from './outdated-deps.js';
+import { agentConfigCheck } from './agent-config.js';
+import { mcpConfigCheck } from './mcp-config.js';
 
 export const ALL_CHECKS: CheckDefinition[] = [
   nodeVersionCheck,
@@ -23,9 +25,15 @@ export const ALL_CHECKS: CheckDefinition[] = [
   gitEnvTrackedCheck,
   portConflictsCheck,
   deployConfigCheck,
+  agentConfigCheck,
+  mcpConfigCheck,
 ];
 
-export async function createContext(cwd: string, verbose = false): Promise<CheckContext> {
+export async function createContext(
+  cwd: string,
+  verbose = false,
+  deep = false
+): Promise<CheckContext> {
   const config = await loadConfig(cwd);
   const pkgPath = path.join(cwd, 'package.json');
   let pkg: Record<string, any> | undefined;
@@ -43,6 +51,7 @@ export async function createContext(cwd: string, verbose = false): Promise<Check
     pkgPath,
     config,
     verbose,
+    deep,
   };
 }
 

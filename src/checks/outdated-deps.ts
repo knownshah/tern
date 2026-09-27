@@ -44,21 +44,22 @@ export const outdatedDepsCheck: CheckDefinition = {
       };
     }
 
-    // 2. Check outdated via package manager (quick check with timeout)
-    try {
-      // Determine package manager
-      let pmCmd = 'npm';
-      if (pkg.packageManager?.startsWith('pnpm')) {
-        pmCmd = 'pnpm';
-      } else if (pkg.packageManager?.startsWith('yarn')) {
-        pmCmd = 'yarn';
-      }
+    // 2. Check outdated via package manager (only during --deep checks)
+    if (context.deep) {
+      try {
+        // Determine package manager
+        let pmCmd = 'npm';
+        if (pkg.packageManager?.startsWith('pnpm')) {
+          pmCmd = 'pnpm';
+        } else if (pkg.packageManager?.startsWith('yarn')) {
+          pmCmd = 'yarn';
+        }
 
-      // Run outdated with a quick non-blocking check
-      const res = await execCommand(pmCmd, ['outdated', '--json'], {
-        cwd: context.cwd,
-        timeout: 4000,
-      });
+        // Run outdated with a quick non-blocking check
+        const res = await execCommand(pmCmd, ['outdated', '--json'], {
+          cwd: context.cwd,
+          timeout: 4000,
+        });
 
       if (res.stdout) {
         try {
@@ -87,8 +88,9 @@ export const outdatedDepsCheck: CheckDefinition = {
           // If JSON parse fails, ignore
         }
       }
-    } catch {
-      // Network offline or timeout, continue gracefully
+      } catch {
+        // Network offline or timeout, continue gracefully
+      }
     }
 
     return {
