@@ -21,9 +21,9 @@ export async function envCommand(options: EnvCommandOptions = {}): Promise<numbe
 
   if (!analysis.hasEnvExample && !analysis.hasEnv) {
     console.log(
-      chalk.yellow(`${icons.warning} Neither ${exampleName} nor ${envName} found in ${cwd}`)
+      chalk.yellow(`${icons.info} Neither ${exampleName} nor ${envName} found in ${cwd}\n`)
     );
-    return 1;
+    return 0;
   }
 
   if (!analysis.hasEnvExample) {

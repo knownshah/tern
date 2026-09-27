@@ -9,7 +9,8 @@ export default defineConfig({
   dts: true,
   clean: true,
   sourcemap: true,
-  shims: true,
+  target: 'node18',
+  platform: 'node',
   banner: ({ entry }) => {
     if (entry === 'cli') {
       return {
