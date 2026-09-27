@@ -60,27 +60,69 @@ yarn global add tern-cli
 
 ---
 
-## 🚀 Commands
+## 🌟 5 Core Capabilities
 
-| Command | Description |
-| :--- | :--- |
-| [`tern doctor`](#1-tern-doctor) | Comprehensive project health scan (fast by default, `--deep` for network audits). |
-| [`tern agent`](#2-tern-agent) | Diagnose readiness of AI coding tools (Codex, Claude Code, Gemini CLI, OpenCode, MCP). |
-| [`tern explain`](#3-tern-explain) | Explain diagnosed issues using an AI provider with sanitized diagnostic metadata. |
-| [`tern why <error>`](#4-tern-why-error) | Explain common runtime errors locally first, or with `--ai` fallback. |
-| [`tern snapshot`](#5-tern-snapshot) | Export a non-sensitive environment configuration snapshot in stable JSON. |
-| [`tern diff <local> <remote>`](#6-tern-diff-local-remote) | Compare two snapshots to solve "works on my machine, fails on VPS". |
-| [`tern watch`](#7-tern-watch) | Watch config files with debounce and report changes cleanly. |
-| [`tern fix`](#8-tern-fix) | Automatically repair safe issues (create `.env`, fix `.gitignore`, missing deps). |
-| [`tern env`](#9-tern-env) | Compare `.env` against `.env.example` **without ever exposing secret values**. |
-| [`tern port <number>`](#10-tern-port-number) | Inspect processes on a port across macOS, Linux, and Windows, with kill option. |
-| [`tern clean`](#11-tern-clean) | Reclaim disk space by clearing caches and build folders (`dist`, `.next`, etc.). |
-| [`tern deps`](#12-tern-deps) | Audit dependency versions, unpinned packages, and vulnerabilities. |
-| [`tern git`](#13-tern-git) | Check branch status, uncommitted files, and scan for leaked secrets. |
-| [`tern deploy`](#14-tern-deploy) | Validate deployment readiness (platform configs, build script, localhost URLs). |
-| [`tern report`](#15-tern-report) | Generate a markdown report categorized by health domains for GitHub Issues. |
+<table>
+  <tr>
+    <td width="50%">
+      <h3>🤖 1. AI Coding &amp; MCP Doctor</h3>
+      <p>Diagnose readiness of <b>OpenAI Codex</b>, <b>Claude Code</b>, <b>Gemini CLI</b>, and <b>OpenCode</b>. Validates Model Context Protocol (MCP) servers across OS-specific paths with zero secret exposure.</p>
+      <code>npx tern-cli agent</code>
+    </td>
+    <td width="50%">
+      <h3>🩺 2. Project Health &amp; Safe Auto-Fix</h3>
+      <p>Checks Node versions, lockfiles, <code>.env</code> vs <code>.env.example</code> parity, and deployment readiness. Automatically repairs safe issues (creates missing <code>.env</code>, updates <code>.gitignore</code>).</p>
+      <code>npx tern-cli doctor</code> • <code>npx tern-cli fix</code>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🔌 3. Port Conflict Inspector &amp; Killer</h3>
+      <p>Cross-platform port inspection. See which PID and process is hogging port 3000, 5173, or 8080 and safely terminate it with one command.</p>
+      <code>npx tern-cli port 3000 --kill</code>
+    </td>
+    <td width="50%">
+      <h3>🔄 4. Environment Snapshot &amp; VPS Diff</h3>
+      <p>Capture non-sensitive environment metadata into JSON and diff local vs VPS to solve the classic <i>"works on my machine, fails on VPS"</i> nightmare.</p>
+      <code>tern diff local.json server.json</code>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <h3>💡 5. Local Error Explanations + AI Remediation</h3>
+      <p>Instant human-friendly explanations for common developer errors (<code>EADDRINUSE</code>, <code>ENOENT</code>, <code>MODULE_NOT_FOUND</code>, detached Git HEAD) locally without calling external APIs, with optional AI fallback.</p>
+      <code>tern why "EADDRINUSE: address already in use :::3000"</code>
+    </td>
+  </tr>
+</table>
 
 ---
+
+## 🚀 All Commands at a Glance
+
+| Command | One-Line Summary | Quick Example |
+| :--- | :--- | :--- |
+| `tern doctor` | Comprehensive project health scan | `tern doctor --strict` |
+| `tern agent` | Diagnose AI coding agents &amp; MCP servers | `tern agent --mcp` |
+| `tern fix` | Automatically repair safe environment issues | `tern fix` |
+| `tern port <port>` | Inspect process on port, optionally terminate | `tern port 3000 --kill` |
+| `tern why <error>` | Explain errors locally or with AI | `tern why "EADDRINUSE"` |
+| `tern snapshot` | Export non-sensitive environment metadata to JSON | `tern snapshot -o env.json` |
+| `tern diff <s1> <s2>` | Diff environments (local vs VPS) | `tern diff local.json vps.json` |
+| `tern watch` | Debounced file watcher for config changes | `tern watch` |
+| `tern env` | Compare `.env` against `.env.example` safely | `tern env` |
+| `tern deploy` | Validate deployment readiness &amp; blockers | `tern deploy` |
+| `tern clean` | Free disk space by clearing caches &amp; build folders | `tern clean --dry-run` |
+| `tern deps` | Audit dependencies, unpinned versions, vulnerabilities | `tern deps` |
+| `tern git` | Check Git status and scan for leaked secrets | `tern git` |
+| `tern explain` | AI diagnosis explanation using sanitized report | `tern explain --provider ollama` |
+| `tern report` | Generate Markdown report for GitHub Issues | `tern report -o report.md` |
+
+<br />
+
+<details>
+<summary><b>📖 Click to expand detailed documentation for all 15 commands</b></summary>
+<br />
 
 ### 1. `tern doctor`
 
@@ -346,6 +388,8 @@ tern report
 tern report -o tern-report.md
 ```
 
+</details>
+
 ---
 
 ## 🔒 Security & Privacy
@@ -420,6 +464,15 @@ Contributions are welcome!
 4. Run linter: `pnpm lint`
 5. Build: `pnpm build`
 6. Open a Pull Request!
+
+---
+
+## 💬 Community & Feedback
+
+Have ideas, questions, or diagnostic results to share?
+- Join the discussion in [GitHub Discussions](https://github.com/terngg/tern/discussions)
+- Report issues or request checks via [GitHub Issues](https://github.com/terngg/tern/issues)
+- Review our [Contributing Guide](CONTRIBUTING.md)
 
 ---
 
