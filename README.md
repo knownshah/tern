@@ -1,61 +1,39 @@
-# Tern 🩺
+# Tern CLI 🩺
 
 <p align="center">
-  <strong>Developer Environment + AI Coding Environment Doctor</strong>
+  <strong>Find out why your development environment is broken.</strong><br />
+  Diagnose Node.js projects, environment variables, ports, Git, deployments, AI coding agents, and MCP — in one command.
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/tern-cli"><img src="https://img.shields.io/npm/v/tern-cli.svg?style=flat-square&color=blue" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/tern-cli"><img src="https://img.shields.io/npm/dm/tern-cli.svg?style=flat-square&color=blue" alt="npm downloads" /></a>
   <a href="https://github.com/terngg/tern"><img src="https://img.shields.io/badge/tests-102%20passed-brightgreen.svg?style=flat-square" alt="Tests Status" /></a>
-  <a href="https://github.com/terngg/tern/stargazers"><img src="https://img.shields.io/github/stars/terngg/tern?style=flat-square&color=yellow" alt="GitHub Stars" /></a>
   <a href="https://github.com/terngg/tern/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat-square" alt="License: MIT" /></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg?style=flat-square" alt="Node.js Version" /></a>
+  <a href="https://github.com/terngg/tern/stargazers"><img src="https://img.shields.io/github/stars/terngg/tern?style=flat-square&color=yellow" alt="GitHub Stars" /></a>
+</p>
+
+<p align="center">
+  <img src="assets/tern-demo.svg" alt="Tern CLI Terminal Demo" width="820" />
 </p>
 
 ---
 
-## What is Tern?
+## ⚡ Try It in 5 Seconds (No Install Needed)
 
-**Tern** is an open-source CLI doctor for modern developer environments and AI coding workflows. It diagnoses traditional project issues (Node.js runtime mismatches, missing lockfiles, secret leakage, unpinned dependencies, port conflicts) alongside AI coding agents (OpenAI Codex, Claude Code, Gemini CLI, OpenCode) and Model Context Protocol (MCP) server configurations.
-
-```
-AI Development Environment
-
-Coding Agents
-✓ Codex             0.157.1
-✓ Claude Code       detected
-✓ Gemini CLI        detected
-⚠ OpenCode          configuration issue
-
-MCP Servers
-✓ filesystem        healthy
-✓ github            healthy
-✗ postgres          command not found
-
-Agent Instructions
-✓ AGENTS.md
-✓ CLAUDE.md
-⚠ GEMINI.md missing
-
-Agent Health: 82%
-2 warnings · 1 error
-```
-
----
-
-## ⚡ Quick Start
-
-Run instantly in any project directory without installation:
+Run directly in any project folder:
 
 ```bash
-# Run developer environment health check
+# 1. Diagnose developer environment & common project issues
 npx tern-cli doctor
 
-# Run AI agent & MCP readiness check
+# 2. Diagnose AI coding agents (Codex, Claude Code, Gemini CLI, OpenCode, MCP)
 npx tern-cli agent
 ```
 
-Or install globally:
+<details>
+<summary>📦 Or install globally as a system CLI</summary>
 
 ```bash
 # Using pnpm
@@ -67,6 +45,18 @@ npm install -g tern-cli
 # Using yarn
 yarn global add tern-cli
 ```
+</details>
+
+---
+
+## 💡 What is Tern CLI?
+
+**Tern CLI** is an open-source developer doctor that eliminates environment friction for traditional Node.js stacks and modern AI-assisted coding tools:
+
+- 🩺 **Traditional Doctor**: Detects port conflicts (PID inspection & safe kill), missing `.env` variables compared to `.env.example`, uncommitted secrets in Git, broken lockfiles, outdated dependencies, and deployment readiness blockers.
+- 🤖 **AI Coding Doctor**: Verifies whether coding tools (**OpenAI Codex**, **Claude Code**, **Google Gemini CLI**, **OpenCode**) and **Model Context Protocol (MCP)** servers are installed, valid, and healthy.
+- 🧠 **AI Explain & Local Rules**: Explains runtime errors (`EADDRINUSE`, `ENOENT`, `MODULE_NOT_FOUND`) locally with instant fix suggestions, or optionally via AI providers (**DeepSeek**, **OpenAI**, **OpenRouter**, **Ollama**).
+- 🔄 **Snapshot & Diff**: Export non-sensitive environment metadata into JSON and diff local vs VPS to instantly pinpoint why a project runs locally but fails on a server.
 
 ---
 

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" width="840" height="560">
+  <defs>
+    <style>
+      .bg { fill: #0d1117; }
+      .bar { fill: #161b22; }
+      .border { stroke: #30363d; stroke-width: 1; fill: none; }
+      .btn-red { fill: #ff5f56; }
+      .btn-yellow { fill: #ffbd2e; }
+      .btn-green { fill: #27c93f; }
+      .title { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 500; text-anchor: middle; }
+      .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 13px; }
+      .prompt { fill: #79c0ff; font-weight: 600; }
+      .cmd { fill: #f0f6fc; font-weight: 600; }
+      .dim { fill: #8b949e; }
+      .green { fill: #3fb950; font-weight: 600; }
+      .yellow { fill: #d29922; font-weight: 600; }
+      .red { fill: #f85149; font-weight: 600; }
+      .cyan { fill: #58a6ff; font-weight: 600; }
+      .white { fill: #f0f6fc; }
+      .section { fill: #f0f6fc; font-weight: 700; }
+      .bar-fill { fill: #3fb950; }
+      .bar-empty { fill: #21262d; }
+    </style>
+  </defs>
+
+  <!-- Terminal Window Background -->
+  <rect x="1" y="1" width="838" height="558" rx="10" ry="10" class="bg" />
+  <rect x="1" y="1" width="838" height="558" rx="10" ry="10" class="border" />
+
+  <!-- Title Bar -->
+  <path d="M 1,11 A 10,10 0 0,1 11,1 L 829,1 A 10,10 0 0,1 839,11 L 839,38 L 1,38 Z" class="bar" />
+  <line x1="1" y1="38" x2="839" y2="38" stroke="#30363d" stroke-width="1" />
+
+  <!-- Window Controls -->
+  <circle cx="20" cy="20" r="6" class="btn-red" />
+  <circle cx="40" cy="20" r="6" class="btn-yellow" />
+  <circle cx="60" cy="20" r="6" class="btn-green" />
+
+  <!-- Window Title -->
+  <text x="420" y="24" class="title">Tern CLI 🩺 — npx tern-cli</text>
+
+  <!-- Terminal Content -->
+  <g class="mono">
+    <!-- Command 1: Doctor -->
+    <text x="30" y="68">
+      <tspan class="prompt">$</tspan>
+      <tspan class="cmd"> npx tern-cli doctor</tspan>
+    </text>
+
+    <text x="30" y="94" class="green">✓ <tspan class="white">Node.js</tspan>          <tspan class="dim">v22.18.0 (matches engines &gt;=18.0.0)</tspan></text>
+    <text x="30" y="116" class="green">✓ <tspan class="white">Git Status</tspan>       <tspan class="dim">Clean working tree on branch main</tspan></text>
+    <text x="30" y="138" class="green">✓ <tspan class="white">Dependencies</tspan>     <tspan class="dim">pnpm-lock.yaml in sync (42 packages verified)</tspan></text>
+    <text x="30" y="160" class="yellow">⚠ <tspan class="white">Port 3000</tspan>        <tspan class="yellow">Occupied by node (PID 18421)</tspan> <tspan class="dim">→ tern port 3000 --kill</tspan></text>
+    <text x="30" y="182" class="red">✗ <tspan class="white">Environment</tspan>      <tspan class="red">DATABASE_URL missing from .env</tspan> <tspan class="dim">[fixable: tern fix]</tspan></text>
+
+    <!-- Health Score Bar -->
+    <text x="30" y="214">
+      <tspan class="section">Project Health: </tspan>
+      <tspan class="green">[████████████████░░░░] 85% </tspan>
+      <tspan class="dim">(Good)</tspan>
+    </text>
+
+    <!-- Separator -->
+    <line x1="30" y1="240" x2="810" y2="240" stroke="#21262d" stroke-width="1" stroke-dasharray="4 4" />
+
+    <!-- Command 2: Agent -->
+    <text x="30" y="272">
+      <tspan class="prompt">$</tspan>
+      <tspan class="cmd"> npx tern-cli agent</tspan>
+    </text>
+
+    <text x="30" y="298" class="cyan">AI Development Environment</text>
+
+    <text x="30" y="324" class="section">Coding Agents</text>
+    <text x="45" y="344" class="green">✓ <tspan class="white">Codex</tspan>             <tspan class="white">0.157.1</tspan></text>
+    <text x="45" y="364" class="green">✓ <tspan class="white">Claude Code</tspan>       <tspan class="white">detected</tspan></text>
+    <text x="45" y="384" class="green">✓ <tspan class="white">Gemini CLI</tspan>        <tspan class="white">detected</tspan></text>
+    <text x="45" y="404" class="yellow">⚠ <tspan class="white">OpenCode</tspan>          <tspan class="yellow">configuration issue in ~/.config/opencode</tspan></text>
+
+    <text x="420" y="324" class="section">MCP Servers</text>
+    <text x="435" y="344" class="green">✓ <tspan class="white">filesystem</tspan>        <tspan class="white">healthy</tspan></text>
+    <text x="435" y="364" class="green">✓ <tspan class="white">github</tspan>            <tspan class="white">healthy</tspan></text>
+    <text x="435" y="384" class="red">✗ <tspan class="white">postgres</tspan>          <tspan class="red">command not found (npx @modelcontextprotocol/server-postgres)</tspan></text>
+    <text x="435" y="404" class="green">✓ <tspan class="white">memory</tspan>            <tspan class="white">healthy</tspan></text>
+
+    <text x="30" y="440" class="section">Agent Instructions</text>
+    <text x="45" y="460" class="green">✓ <tspan class="white">AGENTS.md</tspan></text>
+    <text x="45" y="480" class="green">✓ <tspan class="white">CLAUDE.md</tspan></text>
+    <text x="45" y="500" class="dim">ℹ <tspan class="dim">GEMINI.md missing (optional)</tspan></text>
+
+    <!-- Agent Summary -->
+    <text x="30" y="534">
+      <tspan class="section">Agent Health: </tspan>
+      <tspan class="green">85% </tspan>
+      <tspan class="dim">· </tspan>
+      <tspan class="yellow">1 warning</tspan>
+      <tspan class="dim"> · </tspan>
+      <tspan class="red">1 error</tspan>
+    </text>
+  </g>
+</svg>
