@@ -23,7 +23,7 @@ const program = new Command();
 program
   .name('tern')
   .description('One command to diagnose your development environment and AI coding setup.')
-  .version('0.1.0', '-v, --version', 'Output current Tern version')
+  .version('0.1.1', '-v, --version', 'Output current Tern version')
   .option('--cwd <path>', 'Specify custom project working directory', process.cwd())
   .option('--verbose', 'Show detailed diagnostic messages', false);
 

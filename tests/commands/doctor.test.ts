@@ -43,7 +43,7 @@ describe('commands/doctor', () => {
 
     // Equivalent to jq . / JSON.parse() on entire stdout
     const parsed = JSON.parse(output.trim());
-    expect(parsed).toHaveProperty('version', '0.1.0');
+    expect(parsed).toHaveProperty('version', '0.1.1');
     expect(parsed).toHaveProperty('timestamp');
     expect(parsed).toHaveProperty('health');
     expect(parsed.results).toBeInstanceOf(Array);

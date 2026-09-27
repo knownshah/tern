@@ -23,7 +23,7 @@ export async function doctorCommand(options: DoctorOptions = {}): Promise<number
   const context = await createContext(cwd, verbose, deep);
 
   if (!jsonOutput) {
-    console.log(chalk.bold(`\nTern v0.1.0`));
+    console.log(chalk.bold(`\nTern v0.1.1`));
   }
 
   const spinner = !jsonOutput
@@ -50,7 +50,7 @@ export async function doctorCommand(options: DoctorOptions = {}): Promise<number
 
   if (jsonOutput) {
     const output = {
-      version: '0.1.0',
+      version: '0.1.1',
       timestamp: new Date().toISOString(),
       health: score,
       results: results.map((r) => ({

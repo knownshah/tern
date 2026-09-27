@@ -1,6 +1,6 @@
 {
   "name": "tern-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Developer Environment + AI Coding Environment Doctor (Codex, Claude Code, Gemini CLI, OpenCode, MCP)",
   "type": "module",
   "bin": {
