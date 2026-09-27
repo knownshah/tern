@@ -65,24 +65,24 @@ yarn global add tern-cli
 <table>
   <tr>
     <td width="50%">
-      <h3>🤖 1. AI Coding &amp; MCP Doctor</h3>
+      <h3>🤖 1. AI Coding & MCP Doctor</h3>
       <p>Diagnose readiness of <b>OpenAI Codex</b>, <b>Claude Code</b>, <b>Gemini CLI</b>, and <b>OpenCode</b>. Validates Model Context Protocol (MCP) servers across OS-specific paths with zero secret exposure.</p>
       <code>npx tern-cli agent</code>
     </td>
     <td width="50%">
-      <h3>🩺 2. Project Health &amp; Safe Auto-Fix</h3>
+      <h3>🩺 2. Project Health & Safe Auto-Fix</h3>
       <p>Checks Node versions, lockfiles, <code>.env</code> vs <code>.env.example</code> parity, and deployment readiness. Automatically repairs safe issues (creates missing <code>.env</code>, updates <code>.gitignore</code>).</p>
       <code>npx tern-cli doctor</code> • <code>npx tern-cli fix</code>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3>🔌 3. Port Conflict Inspector &amp; Killer</h3>
+      <h3>🔌 3. Port Conflict Inspector & Killer</h3>
       <p>Cross-platform port inspection. See which PID and process is hogging port 3000, 5173, or 8080 and safely terminate it with one command.</p>
       <code>npx tern-cli port 3000 --kill</code>
     </td>
     <td width="50%">
-      <h3>🔄 4. Environment Snapshot &amp; VPS Diff</h3>
+      <h3>🔄 4. Environment Snapshot & VPS Diff</h3>
       <p>Capture non-sensitive environment metadata into JSON and diff local vs VPS to solve the classic <i>"works on my machine, fails on VPS"</i> nightmare.</p>
       <code>tern diff local.json server.json</code>
     </td>
@@ -103,7 +103,7 @@ yarn global add tern-cli
 | Command | One-Line Summary | Quick Example |
 | :--- | :--- | :--- |
 | `tern doctor` | Comprehensive project health scan | `tern doctor --strict` |
-| `tern agent` | Diagnose AI coding agents &amp; MCP servers | `tern agent --mcp` |
+| `tern agent` | Diagnose AI coding agents & MCP servers | `tern agent --mcp` |
 | `tern fix` | Automatically repair safe environment issues | `tern fix` |
 | `tern port <port>` | Inspect process on port, optionally terminate | `tern port 3000 --kill` |
 | `tern why <error>` | Explain errors locally or with AI | `tern why "EADDRINUSE"` |
@@ -111,8 +111,8 @@ yarn global add tern-cli
 | `tern diff <s1> <s2>` | Diff environments (local vs VPS) | `tern diff local.json vps.json` |
 | `tern watch` | Debounced file watcher for config changes | `tern watch` |
 | `tern env` | Compare `.env` against `.env.example` safely | `tern env` |
-| `tern deploy` | Validate deployment readiness &amp; blockers | `tern deploy` |
-| `tern clean` | Free disk space by clearing caches &amp; build folders | `tern clean --dry-run` |
+| `tern deploy` | Validate deployment readiness & blockers | `tern deploy` |
+| `tern clean` | Free disk space by clearing caches & build folders | `tern clean --dry-run` |
 | `tern deps` | Audit dependencies, unpinned versions, vulnerabilities | `tern deps` |
 | `tern git` | Check Git status and scan for leaked secrets | `tern git` |
 | `tern explain` | AI diagnosis explanation using sanitized report | `tern explain --provider ollama` |
@@ -314,6 +314,8 @@ tern port 3000 --kill
 # Force terminate without confirmation
 tern port 3000 --kill --force --yes
 ```
+
+For Docker containers and WSL2 mirrored networking (where `wslhost.exe` or Docker proxies hold the port), see the [Docker & WSL2 port conflicts recipe](docs/recipes/docker-wsl2-ports.md).
 
 ---
 
